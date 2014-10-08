@@ -1,5 +1,6 @@
 from django.core.urlresolvers import resolve
 from django.test import TestCase
+from django.template.loader import render_to_string
 from lists.views import home_page
 from django.http import HttpRequest
 
