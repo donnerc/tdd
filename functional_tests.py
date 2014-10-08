@@ -29,7 +29,7 @@ class NewVisitorTest(unittest.TestCase):
         # peut taper sa tâche
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEqual(
-            inputbox.attribute('placeholder'),
+            inputbox.get_attribute('placeholder'),
             'Saisir votre tâche ici'
         )
 
