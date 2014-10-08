@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 
@@ -18,8 +19,35 @@ class NewVisitorTest(unittest.TestCase):
         # tâches. Il se dépeche de visiter le site de développement
         self.browser.get('https://tdd-c9-donnerc.c9.io/')
 
-        # il remarque que la page a un titre qui contient le mot 'To-Do'
+        # il remarque que la page a un titre et un en-têtequi contient le mot
+        # 'To-Do'
         self.assertIn('To-Do', self.browser.title)
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('To-Do', header_text)
+
+        # il voit qu'il y a un champ d'entrée de type texte dans lequel il
+        # peut taper sa tâche
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+            inputbox.attribute('placeholder'),
+            'Saisir votre tâche ici'
+        )
+
+        # il entre la première chose à faire le matin
+        inputbox.send_keys('Rendre grâce au Créateur')
+
+        # lorsqu'elle presse sur la touche ENTER, la page se raffraichit et la
+        # page liste la tâche entrée
+        # "1: Rendre grâce au Créateur"
+        # en tant qu'élément d'une liste à puces
+        inputbox.send_keys(Keys.ENTER)
+
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertTrue(
+            any(row.text == "1: Rendre grâce au Créateur" for row in rows),
+        )
+
         self.fail('il ne faut pas oublier de terminer ce test')
 
 if __name__ == '__main__':
