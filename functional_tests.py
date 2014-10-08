@@ -46,6 +46,7 @@ class NewVisitorTest(unittest.TestCase):
         rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
             any(row.text == "1: Rendre grâce au Créateur" for row in rows),
+            "la tâche insérée n'apparait pas sur la page après raffraichissement"
         )
 
         self.fail('il ne faut pas oublier de terminer ce test')
