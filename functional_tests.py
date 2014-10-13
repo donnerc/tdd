@@ -14,6 +14,11 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Bill a entendu parler d'un nouveau site permettant de gérer ses
         # tâches. Il se dépeche de visiter le site de développement
@@ -42,9 +47,7 @@ class NewVisitorTest(unittest.TestCase):
         # en tant qu'élément d'une liste à puces
         inputbox.send_keys(Keys.ENTER)
 
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn("1: Rendre grâce au Créateur", [row.text for row in rows])
+        self.check_for_row_in_list_table("1: Rendre grâce au Créateur")
 
         # il y a toujours le champ qui permet d'insérer des tâches. Bill va
         # donc saisir une deuxième tâche. Il entre "Se laver"
@@ -54,11 +57,8 @@ class NewVisitorTest(unittest.TestCase):
 
         # la page se raffraichit et montre maintenant les deux items sur la
         # page
-
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn("1: Rendre grâce au Créateur", [row.text for row in rows])
-        self.assertIn("2: Se laver", [row.text for row in rows])
+        self.check_for_row_in_list_table("1: Rendre grâce au Créateur")
+        self.check_for_row_in_list_table("2: Se laver")
 
         self.fail('il ne faut pas oublier de terminer ce test')
 
