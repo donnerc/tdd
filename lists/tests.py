@@ -23,6 +23,16 @@ class HomePageTest(TestCase):
         response = home_page(request)
         expected_html = render_to_string('home.html')
         self.assertEqual(response.content.decode(), expected_html)
+        
+    def test_home_page_displays_all_list_items(self):
+        Item.objects.create(text="item test 1")
+        Item.objects.create(text="item test 2")
+        
+        request = HttpRequest()
+        response = home_page(request)
+        
+        self.assertIn("item test 1", response.content.decode())
+        self.assertIn("item test 2", response.content.decode())
     
     def test_home_page_can_save_a_POST_request(self):
         request = HttpRequest()
@@ -31,13 +41,39 @@ class HomePageTest(TestCase):
         
         response = home_page(request)
         
-        self.assertIn('new todo item', response.content.decode())
-        expected_html = render_to_string(
-            'home.html',
-            {'new_item_text' : 'new todo item'}
-        )
-        self.assertEqual(response.content.decode(), expected_html)
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'new todo item')
         
+        # je ne suis pas sur que ce code doive ici, il n'indiquait pas où le
+        # mettre ... ce code n'a plus de sens avec la redirection
+        
+        # self.assertIn('new todo item', response.content.decode())
+        # expected_html = render_to_string(
+        #     'home.html',
+        #     {'new_item_text' : 'new todo item'}
+        # )
+        # self.assertEqual(response.content.decode(), expected_html)
+        
+        # vérifie que l'on soit bien redirigé ...
+        
+    def test_home_redirects_after_POST_request(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['item_text'] = 'new todo item'
+        
+        response = home_page(request)
+        
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
+        
+        
+        
+    def test_home_page_only_saves_items_on_post_request(self):
+        request = HttpRequest()
+        response = home_page(request)
+        
+        self.assertEqual(Item.objects.count(), 0)
         
 class ItemModelTest(TestCase):
     
