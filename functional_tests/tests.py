@@ -22,7 +22,8 @@ class NewVisitorTest(LiveServerTestCase):
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Bill a entendu parler d'un nouveau site permettant de gérer ses
         # tâches. Il se dépeche de visiter le site de développement
-        self.browser.get('https://tdd-c9-donnerc.c9.io/')
+        # self.browser.get('https://tdd-c9-donnerc.c9.io/')
+        self.browser.get(self.live_server_url)
 
         # il remarque que la page a un titre et un en-têtequi contient le mot
         # 'To-Do'
