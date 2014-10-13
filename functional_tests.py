@@ -44,12 +44,24 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == "1: Rendre grâce au Créateur" for row in rows),
-            "la tâche insérée n'apparait pas sur la page après raffraichissement"
-        )
+        self.assertIn("1: Rendre grâce au Créateur", [row.text for row in rows])
+
+        # il y a toujours le champ qui permet d'insérer des tâches. Bill va
+        # donc saisir une deuxième tâche. Il entre "Se laver"
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Se laver')
+        inputbox.send_keys(Keys.ENTER)
+
+        # la page se raffraichit et montre maintenant les deux items sur la
+        # page
+
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn("1: Rendre grâce au Créateur", [row.text for row in rows])
+        self.assertIn("2: Se laver", [row.text for row in rows])
 
         self.fail('il ne faut pas oublier de terminer ce test')
+
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')

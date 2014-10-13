@@ -30,3 +30,9 @@ class HomePageTest(TestCase):
         response = home_page(request)
         
         self.assertIn('new todo item', response.content.decode())
+        expected_html = render_to_string(
+            'home.html',
+            {'new_item_text' : 'new todo item'}
+        )
+        self.assertEqual(response.content.decode(), expected_html)
+        
