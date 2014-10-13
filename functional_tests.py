@@ -60,8 +60,6 @@ class NewVisitorTest(unittest.TestCase):
         self.check_for_row_in_list_table("1: Rendre grâce au Créateur")
         self.check_for_row_in_list_table("2: Se laver")
 
-        self.fail('il ne faut pas oublier de terminer ce test')
-
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')
