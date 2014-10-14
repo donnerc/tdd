@@ -86,7 +86,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Cunégonde reçoit une URL privée pour sa liste
         cunegonde_list_url = self.browser.current_url
-        self.assertRegex('/lists/.+')
+        self.assertRegex(cunegonde_list_url, '/lists/.+')
         self.assertNotEqual(bill_list_url, cunegonde_list_url)
 
         # il n'y a toujours aucune trace de la liste de Bill
