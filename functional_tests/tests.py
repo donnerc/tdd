@@ -10,7 +10,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser = webdriver.Firefox()
         # demande à Selenium d'attendre 3 secondes si nécessaire (chargement
         # de la page) avant de faire les tests
-        self.browser.implicitly_wait(3)
+        self.browser.implicitly_wait(1)
 
     def tearDown(self):
         self.browser.quit()
@@ -95,8 +95,30 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotIn('Se laver', page_text)
 
         # tous deux satisfaits, ils partent joyeusement au travail
-        self.assertTrue(False, 'terminer ce test')
 
+
+    def test_layout_and_styling(self):
+        # Bill se rend sur la page d'accueil et redimensionne la page
+        self.browser.get(self.live_server_url)
+        self.browser.set_window_size(1024, 768)
+
+        # Il remarque que le champ d'entrée est bien centré
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=5
+        )
+
+        # il saisit une tâche et voit que la boite est également centrée sur
+        # la page permettant de gérer sa liste
+        inputbox.send_keys('ceci est un test\n')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=5
+        )
 
 
 
