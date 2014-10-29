@@ -1,27 +1,10 @@
 # from django.test import LiveServerTestCase
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from .base import FunctionalTest
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import unittest
 
 
-class NewVisitorTest(StaticLiveServerTestCase):
-
-    def setUp(self):
-        self.browser = webdriver.Firefox()
-        # demande à Selenium d'attendre 3 secondes si nécessaire (chargement
-        # de la page) avant de faire les tests
-        self.browser.implicitly_wait(1)
-
-    def tearDown(self):
-        # pour éviter les erreurs stupides dans Windows
-        self.browser.refresh()
-        self.browser.quit()
-
-    def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(row_text, [row.text for row in rows])
+class NewVisitorTest(FunctionalTest):
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Bill a entendu parler d'un nouveau site permettant de gérer ses
@@ -99,48 +82,6 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.assertNotIn('Se laver', page_text)
 
         # tous deux satisfaits, ils partent joyeusement au travail
-
-
-    def test_layout_and_styling(self):
-        # Bill se rend sur la page d'accueil et redimensionne la page
-        self.browser.get(self.live_server_url)
-        self.browser.set_window_size(1024, 768)
-
-        # Il remarque que le champ d'entrée est bien centré
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
-            delta=10
-        )
-
-        # il saisit une tâche et voit que la boite est également centrée sur
-        # la page permettant de gérer sa liste
-        inputbox.send_keys('ceci est un test\n')
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
-            delta=10
-        )
-
-    @skip
-    def test_cannot_add_empty_list(self):
-
-        # Bill se rend su rl page d'accueil et tente d'insérer une tache vide
-        # accidentellement. Elle tape Enter dans la liste d'entrée.
-
-        # la page d'accueil se charge avec un message d'erreur indiquant qu'il
-        # n'est pas possible de créer une nouvelle liste avec une tâche vide.
-
-        # Il fait une deuxième tentative avec du texte cette-fois ci, ce qui
-        # fonctionne comme prévu.
-
-        # Il décide de réessayer d'envoyer un item vide et reçoit un message
-        # d'erreur.
-
-        # il peut corriger son erreur en remplissant le champ approprié.
-        self.fail("Write Me !!!")
 
 
 # ceci n'est plus utile puisque l'on utilise LiveServerTestCase et que le test
