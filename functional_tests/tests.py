@@ -110,7 +110,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
             512,
-            delta=5
+            delta=10
         )
 
         # il saisit une tâche et voit que la boite est également centrée sur
@@ -120,7 +120,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
             512,
-            delta=5
+            delta=10
         )
 
 
