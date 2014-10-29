@@ -72,6 +72,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         ## On utilise une nouvelle session pour s'assurer que
         ## Cunégonde n'arrive pas sur la liste de Bill
+        self.browser.refresh()
         self.browser.quit()
         self.browser = webdriver.Firefox()
 
@@ -123,23 +124,23 @@ class NewVisitorTest(StaticLiveServerTestCase):
             delta=10
         )
 
+    @skip
+    def test_cannot_add_empty_list(self):
 
-def test_cannot_add_empty_list(self):
+        # Bill se rend su rl page d'accueil et tente d'insérer une tache vide
+        # accidentellement. Elle tape Enter dans la liste d'entrée.
 
-    # Bill se rend su rl page d'accueil et tente d'insérer une tache vide
-    # accidentellement. Elle tape Enter dans la liste d'entrée.
+        # la page d'accueil se charge avec un message d'erreur indiquant qu'il
+        # n'est pas possible de créer une nouvelle liste avec une tâche vide.
 
-    # la page d'accueil se charge avec un message d'erreur indiquant qu'il
-    # n'est pas possible de créer une nouvelle liste avec une tâche vide.
+        # Il fait une deuxième tentative avec du texte cette-fois ci, ce qui
+        # fonctionne comme prévu.
 
-    # Il fait une deuxième tentative avec du texte cette-fois ci, ce qui
-    # fonctionne comme prévu.
+        # Il décide de réessayer d'envoyer un item vide et reçoit un message
+        # d'erreur.
 
-    # Il décide de réessayer d'envoyer un item vide et reçoit un message
-    # d'erreur.
-
-    # il peut corriger son erreur en remplissant le champ approprié.
-    self.fail("Write Me !!!")
+        # il peut corriger son erreur en remplissant le champ approprié.
+        self.fail("Write Me !!!")
 
 
 # ceci n'est plus utile puisque l'on utilise LiveServerTestCase et que le test
