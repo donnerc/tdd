@@ -6,7 +6,7 @@ from django.http import HttpRequest
 from django.utils.html import escape
 
 from lists.models import Item, List
-from lists.forms import ItemForm
+from lists.forms import ItemForm, EMPTY_LIST_ERROR
 
 # test pour tester que les tests fonctionnent
 # class SmokeTest(TestCase):
@@ -48,13 +48,20 @@ class NewListTest(TestCase):
         new_list = List.objects.first()
         self.assertRedirects(response, '/lists/{}/'.format(new_list.id))
 
-    def test_validation_errors_sent_back_to_homepage_template(self):
+    def test_for_invalid_input_renders_home_template(self):
         response = self.client.post('/lists/new', data={'text': ''})
         self.assertEqual(response.status_code, 200)
-        # après une erreur, c'est de nouveau la page d'accueil qui se charge
         self.assertTemplateUsed(response, 'home.html')
-        expected_error = escape("Impossible de créer une liste avec un item qui est vide")
-        self.assertContains(response, expected_error)
+
+
+    def test_validation_errors_are_shown_on_home_page(self):
+        response = self.client.post('/lists/new', data={'text': ''})
+        self.assertContains(response, escape(EMPTY_LIST_ERROR))
+
+
+    def test_for_invalid_input_passes_form_to_template(self):
+        response = self.client.post('/lists/new', data={'text': ''})
+        self.assertIsInstance(response.context['form'], ItemForm)
 
     def test_blank_items_arent_saved(self):
         self.client.post('/lists/new', data={'text': ''})
@@ -77,7 +84,6 @@ class ListViewTest(TestCase):
         other_list = List.objects.create()
         Item.objects.create(text='other premier item', list=other_list)
         Item.objects.create(text='other deuxième item', list=other_list)
-
 
         response = self.client.get('/lists/{}/'.format(correct_list.id))
 
@@ -115,19 +121,32 @@ class ListViewTest(TestCase):
 
         self.assertRedirects(response, '/lists/{}/'.format(correct_list.id))
 
-    def test_validation_errors_end_up_on_lists_page(self):
+    def post_invalid_input(self):
         list_ = List.objects.create()
-        response = self.client.post(
-            '/lists/{}/'.format(list_.id),
+        return self.client.post(
+            '/lists/%d/' % (list_.id,),
             data={'text': ''}
         )
-        self.assertEqual(response.status_code, 200)
-        # après une erreur, c'est de nouveau la page d'accueil qui se charge
-        self.assertTemplateUsed(response, 'list.html')
-        expected_error = escape("Impossible de créer une liste avec un item qui est vide")
-        self.assertContains(response, expected_error)
 
-    def test_blank_items_arent_saved(self):
-        self.client.post('/lists/new', data={'text': ''})
-        self.assertEqual(List.objects.count(), 0)
+    def test_for_invalid_input_nothing_saved_to_db(self):
+        self.post_invalid_input()
         self.assertEqual(Item.objects.count(), 0)
+
+    def test_for_invalid_input_renders_list_template(self):
+        response = self.post_invalid_input()
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'list.html')
+
+    def test_for_invalid_input_passes_form_to_template(self):
+        response = self.post_invalid_input()
+        self.assertIsInstance(response.context['form'], ItemForm)
+
+    def test_for_invalid_input_shows_error_on_page(self):
+        response = self.post_invalid_input()
+        self.assertContains(response, escape(EMPTY_LIST_ERROR))
+
+    def test_displays_item_form(self):
+        list_ = List.objects.create()
+        response = self.client.get('/lists/%d/' % (list_.id,))
+        self.assertIsInstance(response.context['form'], ItemForm)
+        self.assertContains(response, 'name="text"')

@@ -2,8 +2,6 @@ from django.shortcuts import render, redirect
 from lists.forms import ItemForm
 from lists.models import Item, List
 
-from django.core.exceptions import ValidationError
-
 
 # Create your views here.
 def home_page(request):
@@ -12,29 +10,23 @@ def home_page(request):
 
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
-    error = None
-
+    form = ItemForm()
     if request.method == 'POST':
-        try:
-            item = Item(text=request.POST['text'], list=list_)
-            item.full_clean()
-            item.save()
+        form = ItemForm(data=request.POST)
+        if form.is_valid():
+            Item.objects.create(text=request.POST['text'], list=list_)
             return redirect(list_)
-        except ValidationError:
-            error = 'Impossible de créer une liste avec un item qui est vide'
-    return render(request, 'list.html', {'list': list_, 'error': error})
+
+    return render(request, 'list.html', {
+        'list': list_, 'form': form
+    })
 
 
 def new_list(request):
-    if request.method == 'POST':
+    form = ItemForm(data=request.POST)
+    if form.is_valid():
         list_ = List.objects.create()
-        item = Item(text=request.POST['text'], list=list_)
-        try:
-            item.full_clean()
-            item.save()
-        except ValidationError:
-            list_.delete()
-            error = 'Impossible de créer une liste avec un item qui est vide'
-            return render(request, 'home.html', {'error': error})
+        Item.objects.create(text=request.POST['text'], list=list_)
         return redirect(list_)
-
+    else:
+        return render(request, 'home.html', {'form': form})
