@@ -16,7 +16,7 @@ class LayoutAndStylingTest(FunctionalTest):
         # la page d'accueil se charge avec un message d'erreur indiquant qu'il
         # n'est pas possible de créer une nouvelle liste avec une tâche vide.
         error = self.browser.find_element_by_css_selector('.has-error') #1
-        self.assertEqual(error.text, "You can't have an empty list item")
+        self.assertEqual(error.text, "Impossible de créer une liste avec un item qui est vide")
 
         # Il fait une deuxième tentative avec du texte cette-fois ci, ce qui
         # fonctionne comme prévu.
@@ -27,7 +27,7 @@ class LayoutAndStylingTest(FunctionalTest):
         # d'erreur.
         self.browser.find_element_by_id('id_new_item').send_keys('\n')
         error = self.browser.find_element_by_css_selector('.has-error')
-        self.assertEqual(error.text, "You can't have an empty list item")
+        self.assertEqual(error.text, "Impossible de créer une liste avec un item qui est vide")
 
         # il peut corriger son erreur en remplissant le champ approprié.
         self.browser.find_element_by_id('id_new_item').send_keys('Make tea\n')
