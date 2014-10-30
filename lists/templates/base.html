@@ -20,6 +20,11 @@
                 <form action="{% block form_action %}{% endblock %}" method="post">
                         <input id="id_new_item" class="form-control input-lg"type="text" name="item_text" placeholder="Saisir votre tâche ici" />
                         {% csrf_token %}
+                        {% if error %}
+                            <div class="form-group has-error">
+                                <span class="help-block">{{ error }}</span>
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>

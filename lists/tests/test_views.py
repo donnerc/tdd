@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.template.loader import render_to_string
 from lists.views import home_page
 from django.http import HttpRequest
+from django.utils.html import escape
 
 from lists.models import Item, List
 
@@ -44,6 +45,19 @@ class NewListTest(TestCase):
 
         new_list = List.objects.first()
         self.assertRedirects(response, '/lists/{}/'.format(new_list.id))
+
+    def test_validation_errors_sent_back_to_homepage_template(self):
+        response = self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(response.status_code, 200)
+        # après une erreur, c'est de nouveau la page d'accueil qui se charge
+        self.assertTemplateUsed(response, 'home.html')
+        expected_error = escape("Impossible de créer une liste avec un item qui est vide")
+        self.assertContains(response, expected_error)
+
+    def test_blank_items_arent_saved(self):
+        self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(List.objects.count(), 0)
+        self.assertEqual(Item.objects.count(), 0)
 
 
 class ListViewTest(TestCase):
