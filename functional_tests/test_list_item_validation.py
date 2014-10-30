@@ -13,6 +13,7 @@ class LayoutAndStylingTest(FunctionalTest):
         self.browser.get(self.server_url)
         self.browser.find_element_by_id('id_new_item').send_keys('\n')
 
+
         # la page d'accueil se charge avec un message d'erreur indiquant qu'il
         # n'est pas possible de créer une nouvelle liste avec une tâche vide.
         error = self.browser.find_element_by_css_selector('.has-error') #1

@@ -112,3 +112,20 @@ class ListViewTest(TestCase):
         )
 
         self.assertRedirects(response, '/lists/{}/'.format(correct_list.id))
+
+    def test_validation_errors_end_up_on_lists_page(self):
+        list_ = List.objects.create()
+        response = self.client.post(
+            '/lists/{}/'.format(list_.id),
+            data={'item_text': ''}
+        )
+        self.assertEqual(response.status_code, 200)
+        # après une erreur, c'est de nouveau la page d'accueil qui se charge
+        self.assertTemplateUsed(response, 'list.html')
+        expected_error = escape("Impossible de créer une liste avec un item qui est vide")
+        self.assertContains(response, expected_error)
+
+    def test_blank_items_arent_saved(self):
+        self.client.post('/lists/new', data={'item_text': ''})
+        self.assertEqual(List.objects.count(), 0)
+        self.assertEqual(Item.objects.count(), 0)
