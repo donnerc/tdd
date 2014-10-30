@@ -21,7 +21,7 @@ class NewVisitorTest(FunctionalTest):
 
         # il voit qu'il y a un champ d'entrée de type texte dans lequel il
         # peut taper sa tâche
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
             'Saisir votre tâche ici'
@@ -40,7 +40,7 @@ class NewVisitorTest(FunctionalTest):
 
         # il y a toujours le champ qui permet d'insérer des tâches. Bill va
         # donc saisir une deuxième tâche. Il entre "Se laver"
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('Se laver')
         inputbox.send_keys(Keys.ENTER)
 
@@ -67,7 +67,7 @@ class NewVisitorTest(FunctionalTest):
         self.assertNotIn('Se laver', page_text)
 
         # Cunégonde commence une nouvelle liste en créant une première tâche
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('Prendre une douche')
         inputbox.send_keys(Keys.ENTER)
 

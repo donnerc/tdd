@@ -41,6 +41,9 @@ class FunctionalTest(StaticLiveServerTestCase):
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
 
+    def get_item_input_box(self):
+        return self.browser.find_element_by_id('id_text')
+
 # ceci n'est plus utile puisque l'on utilise LiveServerTestCase et que le test
 # est chargé comme un module
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ class LayoutAndStylingTest(FunctionalTest):
         self.browser.set_window_size(1024, 768)
 
         # Il remarque que le champ d'entrée est bien centré
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
             512,
@@ -22,7 +22,7 @@ class LayoutAndStylingTest(FunctionalTest):
         # il saisit une tâche et voit que la boite est également centrée sur
         # la page permettant de gérer sa liste
         inputbox.send_keys('ceci est un test\n')
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
             512,
