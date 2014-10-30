@@ -90,14 +90,11 @@ class ListViewTest(TestCase):
         response = self.client.get('/lists/{}/'.format(list_.id))
         self.assertTemplateUsed(response, 'list.html')
 
-
-class NewItemTest(TestCase):
-
     def test_can_save_a_POST_request_to_existing_list(self):
         correct_list = List.objects.create()
 
         self.client.post(
-            '/lists/{}/add_item'.format(correct_list.id),
+            '/lists/{}/'.format(correct_list.id),
             data={'item_text': 'New ToDo item for existing list'}
         )
 
@@ -106,11 +103,11 @@ class NewItemTest(TestCase):
         self.assertEqual(new_item.text, 'New ToDo item for existing list')
         self.assertEqual(new_item.list, correct_list)
 
-    def test_redirects_to_list_view(self):
+    def test_POST_redirects_to_list_view(self):
         correct_list = List.objects.create()
 
         response = self.client.post(
-            '/lists/{}/add_item'.format(correct_list.id),
+            '/lists/{}/'.format(correct_list.id),
             data={'item_text': 'New ToDo item for existing list'}
         )
 
